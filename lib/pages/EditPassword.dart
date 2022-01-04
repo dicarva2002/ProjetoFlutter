@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/pages/login.dart';
 
-class HomePage2 extends StatelessWidget {
+class HomePage3 extends StatelessWidget {
   bool isHiddenPassword = true;
   @override
   Widget build(BuildContext context) {
@@ -26,10 +26,18 @@ class HomePage2 extends StatelessWidget {
                   margin: new EdgeInsets.symmetric(
                       horizontal: 40.0, vertical: 10.0),
                   child: TextField(
+                    obscureText: isHiddenPassword,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.person),
-                        labelText: "Nome"),
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.password),
+                      labelText: "Password Atual",
+                      suffixIcon: InkWell(
+                        onTap: _togglePasswordView,
+                        child: Icon(
+                          Icons.visibility,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Container(
@@ -37,10 +45,18 @@ class HomePage2 extends StatelessWidget {
                   margin: new EdgeInsets.symmetric(
                       horizontal: 40.0, vertical: 10.0),
                   child: TextField(
+                    obscureText: isHiddenPassword,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.email),
-                        labelText: "Email"),
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.password),
+                      labelText: "Nova Password",
+                      suffixIcon: InkWell(
+                        onTap: _togglePasswordView,
+                        child: Icon(
+                          Icons.visibility,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Container(
@@ -48,21 +64,18 @@ class HomePage2 extends StatelessWidget {
                   margin: new EdgeInsets.symmetric(
                       horizontal: 40.0, vertical: 10.0),
                   child: TextField(
+                    obscureText: isHiddenPassword,
                     decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.contact_phone),
-                        labelText: "Contacto"),
-                  ),
-                ),
-                Container(
-                  height: 40,
-                  margin: new EdgeInsets.symmetric(
-                      horizontal: 40.0, vertical: 10.0),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        icon: Icon(Icons.school),
-                        labelText: "Universidade"),
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.security),
+                      labelText: "Confirmar Password",
+                      suffixIcon: InkWell(
+                        onTap: _togglePasswordView,
+                        child: Icon(
+                          Icons.visibility,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Container(
@@ -74,10 +87,10 @@ class HomePage2 extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (BuildContext context) => HomePage1()));
+                              builder: (BuildContext context) => LoginPage()));
                     },
                     child: Text(
-                      "EDITAR",
+                      "ALTERAR PASSWORD",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -89,6 +102,9 @@ class HomePage2 extends StatelessWidget {
                         ),
                         primary: Colors.black),
                   ),
+                ),
+                SizedBox(
+                  height: 15,
                 ),
               ]),
               margin:

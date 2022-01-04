@@ -1,9 +1,70 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/login.dart';
+import 'package:flutter_application_1/pages/createAccount.dart';
+import 'package:flutter_application_1/pages/edit.dart';
+import 'package:flutter_application_1/pages/EditPassword.dart';
+import 'package:flutter_application_1/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  bool isHiddenPassword = true;
+class LoginPage extends StatefulWidget {
+  LoginPage({Key? key}) : super(key: key);
+
   @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool isHiddenPassword = true;
+  final formKey = GlobalKey<FormState>();
+  final email = TextEditingController();
+  final senha = TextEditingController();
+
+  bool isLogin = true;
+  late String titulo;
+  late String actionButton;
+  late String toggleButton;
+  bool loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    setFormAction(true);
+  }
+
+  setFormAction(bool acao) {
+    setState(() {
+      isLogin = acao;
+      if (isLogin) {
+        titulo = "Bem Vindo";
+        actionButton = "Login";
+        toggleButton = "Ainda nao tem conta? Crie agora.";
+      } else {
+        titulo = "Crie sua conta";
+        actionButton = "Criar";
+        toggleButton = "Voltar ao Login";
+      }
+    });
+  }
+
+  login() async {
+    setState(() => loading = true);
+    try {
+      await context.read<AuthService>().login(email.text, senha.text);
+    } on AuthException catch (e) {
+      setState(() => loading = false);
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
+    }
+  }
+
+  registar() async {
+    try {
+      await context.read<AuthService>().registar(email.text, senha.text);
+    } on AuthException catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -12,6 +73,14 @@ class HomePage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Container(
             child: Column(children: [
+              Text(
+                titulo,
+                style: TextStyle(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: -1.5,
+                ),
+              ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: Image(
@@ -22,29 +91,27 @@ class HomePage extends StatelessWidget {
                 height: 40,
                 margin:
                     new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                child: TextField(
+                child: TextFormField(
+                  controller: email,
                   decoration: InputDecoration(
-                      icon: Icon(Icons.person),
                       border: OutlineInputBorder(),
-                      labelText: "Nome"),
-                ),
-              ),
-              Container(
-                height: 40,
-                margin:
-                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                child: TextField(
-                  decoration: InputDecoration(
                       icon: Icon(Icons.email),
-                      border: OutlineInputBorder(),
                       labelText: "Email"),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Informe o email corretamente!';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Container(
                 height: 40,
                 margin:
                     new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                child: TextField(
+                child: TextFormField(
+                  controller: senha,
                   obscureText: isHiddenPassword,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
@@ -57,47 +124,14 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                ),
-              ),
-              Container(
-                height: 40,
-                margin:
-                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                child: TextField(
-                  obscureText: isHiddenPassword,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    icon: Icon(Icons.security),
-                    labelText: "Confirmar Password",
-                    suffixIcon: InkWell(
-                      onTap: _togglePasswordView,
-                      child: Icon(
-                        Icons.visibility,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Container(
-                height: 40,
-                margin:
-                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      icon: Icon(Icons.contact_phone),
-                      labelText: "Contacto"),
-                ),
-              ),
-              Container(
-                height: 40,
-                margin:
-                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      icon: Icon(Icons.school),
-                      labelText: "Universidade"),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Informe a sua senha!';
+                    } else if (value.length < 6) {
+                      return 'Sua senha deve ter no minimo 6 carateres';
+                    }
+                    return null;
+                  },
                 ),
               ),
               Container(
@@ -106,13 +140,20 @@ class HomePage extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 10),
                 child: ElevatedButton(
                   onPressed: () {
+                    if (formKey.currentState!.validate()) {
+                      if (isLogin) {
+                        login();
+                      } else {
+                        registar();
+                      }
+                    }
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage1()));
+                            builder: (BuildContext context) => HomePage()));
                   },
                   child: Text(
-                    "CRIAR CONTA",
+                    actionButton,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -125,6 +166,9 @@ class HomePage extends StatelessWidget {
                       primary: Colors.black),
                 ),
               ),
+              TextButton(
+                  onPressed: () => setFormAction(!isLogin),
+                  child: Text(toggleButton)),
               Container(
                 height: 40,
                 width: 200,
@@ -134,7 +178,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage1()));
+                            builder: (BuildContext context) => HomePage3()));
                   },
                   child: Text(
                     "ENTRAR",
@@ -168,3 +212,4 @@ class HomePage extends StatelessWidget {
     isHiddenPassword = !isHiddenPassword;
   }
 }
+// habilitar dentro do firebase o login 

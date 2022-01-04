@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/createAccount.dart';
-import 'package:flutter_application_1/edit.dart';
-import 'package:flutter_application_1/EditPassword.dart';
+import 'package:flutter_application_1/pages/login.dart';
 
-class HomePage1 extends StatelessWidget {
+class HomePage extends StatelessWidget {
   bool isHiddenPassword = true;
   @override
   Widget build(BuildContext context) {
@@ -26,8 +24,19 @@ class HomePage1 extends StatelessWidget {
                     new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
                 child: TextField(
                   decoration: InputDecoration(
+                      icon: Icon(Icons.person),
                       border: OutlineInputBorder(),
+                      labelText: "Nome"),
+                ),
+              ),
+              Container(
+                height: 40,
+                margin:
+                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                child: TextField(
+                  decoration: InputDecoration(
                       icon: Icon(Icons.email),
+                      border: OutlineInputBorder(),
                       labelText: "Email"),
                 ),
               ),
@@ -52,6 +61,47 @@ class HomePage1 extends StatelessWidget {
               ),
               Container(
                 height: 40,
+                margin:
+                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                child: TextField(
+                  obscureText: isHiddenPassword,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    icon: Icon(Icons.security),
+                    labelText: "Confirmar Password",
+                    suffixIcon: InkWell(
+                      onTap: _togglePasswordView,
+                      child: Icon(
+                        Icons.visibility,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                height: 40,
+                margin:
+                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.contact_phone),
+                      labelText: "Contacto"),
+                ),
+              ),
+              Container(
+                height: 40,
+                margin:
+                    new EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                child: TextField(
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      icon: Icon(Icons.school),
+                      labelText: "Universidade"),
+                ),
+              ),
+              Container(
+                height: 40,
                 width: 200,
                 margin: EdgeInsets.symmetric(vertical: 10),
                 child: ElevatedButton(
@@ -59,7 +109,7 @@ class HomePage1 extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage()));
+                            builder: (BuildContext context) => LoginPage()));
                   },
                   child: Text(
                     "CRIAR CONTA",
@@ -84,7 +134,7 @@ class HomePage1 extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage3()));
+                            builder: (BuildContext context) => LoginPage()));
                   },
                   child: Text(
                     "ENTRAR",
